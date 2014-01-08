@@ -27,11 +27,7 @@ class Curly::TemplateHandler
           presenter_key = nil
         end
 
-        options = {
-          expires_in: presenter.cache_duration
-        }
-
-        context.cache([key, presenter_key].compact, options) do
+        context.cache([key, presenter_key].compact, presenter.cache_options) do
           yield
         end
       else

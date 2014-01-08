@@ -321,6 +321,22 @@ class Posts::ShowPresenter < Curly::Presenter
 end
 ```
 
+Indeed, you can define any option that you want passed to the cache
+implementation by defining a `#cache_options` method:
+
+```ruby
+class Posts::ShowPresenter < Curly::Presenter
+  ...
+
+  def cache_options
+    # The default implementation simply returns a hash with the :expires_in
+    # option set to the value returned by #cache_duration. You can either base
+    # your implementation on `super` or return just the options you want set.
+    super.merge(compress: true)
+  end
+end
+```
+
 
 ### Static Caching
 

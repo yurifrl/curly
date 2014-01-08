@@ -111,6 +111,18 @@ module Curly
       nil
     end
 
+    # The options that should be passed to the cache implementation. May depend
+    # on which cache backend you're using.
+    #
+    # By default, it only returns an `:expires_in` option with the value
+    # defined by `#cache_duration` (defaults to nil), but you can add any
+    # option that your cache backend accepts.
+    #
+    # Returns a Hash of options that are passed to the cache implementation.
+    def cache_options
+      { expires_in: cache_duration }
+    end
+
     class << self
 
       # The name of the presenter class for a given view path.
