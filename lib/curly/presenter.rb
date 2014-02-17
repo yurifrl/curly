@@ -111,6 +111,26 @@ module Curly
       nil
     end
 
+    # The options that should be passed to the cache implementation when
+    # caching the presenter's view. The options available depends on the cache
+    # implementation, but common options are:
+    #
+    #  :expires_in         - An Integer number of seconds until the cache entry
+    #                        should expire. Note that this value can be set by
+    #                        defining a method `cache_duration` in your
+    #                        presenter.
+    #  :race_condition_ttl - An Integer number of seconds that a stale cache
+    #                        entry should be extended. This allows serving the
+    #                        stale version while a fresh one is being computed.
+    #
+    # Read more about these options in the documentation for
+    # ActiveSupport::Cache::Store.
+    #
+    # Returns the Hash of options or nil if no options are given.
+    def cache_options
+      nil
+    end
+
     class << self
 
       # The name of the presenter class for a given view path.
