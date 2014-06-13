@@ -92,4 +92,51 @@ describe Curly::ReferenceCompiler do
       context.render(&block)
     end
   end
+
+  describe ".compile_conditional" do
+    let(:presenter_class) do
+      Class.new do
+        def yes?
+          true
+        end
+
+        def no?
+          false
+        end
+
+        def even?(number)
+          number.to_i % 2 == 0
+        end
+
+        def self.method_available?(name)
+          true
+        end
+      end
+    end
+
+    it "compiles a simple conditional block" do
+      evaluate("yes?").should == "yolo"
+      evaluate("no?").should == nil
+    end
+
+    it "allows a parameter" do
+      evaluate("even.42?").should == "yolo"
+    end
+
+    def evaluate(reference, &block)
+      code = Curly::ReferenceCompiler.compile_conditional(presenter_class, reference)
+      presenter = presenter_class.new
+      context = double("context", presenter: presenter)
+
+      context.instance_eval(<<-RUBY)
+        def self.render
+          if #{code}
+            "yolo"
+          end
+        end
+      RUBY
+
+      context.render(&block)
+    end
+  end
 end
