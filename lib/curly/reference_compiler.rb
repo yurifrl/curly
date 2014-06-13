@@ -16,12 +16,13 @@ module Curly
 
     def self.compile_conditional(presenter_class, reference)
       method, argument, rest = parse_name_and_parameter(reference)
+      attributes = AttributeParser.parse(rest)
 
       unless method.end_with?("?")
         raise Curly::Error, "not a valid conditional block: `#{reference}`"
       end
 
-      new(presenter_class, method).compile(argument)
+      new(presenter_class, method).compile(argument, attributes)
     end
 
     def self.parse_name_and_parameter(reference)

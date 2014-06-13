@@ -19,6 +19,10 @@ describe Curly::Compiler do
         value == "world"
       end
 
+      def even?(number:)
+        number.to_i % 2 == 0
+      end
+
       def unicorns
         "UNICORN"
       end
@@ -36,7 +40,7 @@ describe Curly::Compiler do
       end
 
       def self.method_available?(method)
-        %w[foo high_yield yield_value dirty false? true? hello?].include?(method)
+        %w[foo high_yield yield_value dirty false? true? hello? even?].include?(method)
       end
 
       def self.available_methods
@@ -126,6 +130,10 @@ describe Curly::Compiler do
 
     it "passes an argument to blocks" do
       evaluate("{{#hello.world?}}foo{{/hello.world?}}{{#hello.foo?}}bar{{/hello.foo?}}").should == "foo"
+    end
+
+    it "passes attributes to condition methods" do
+      evaluate("{{#even? number=2}}yes{{/even? number=2}}").should == "yes"
     end
 
     it "gives an error on mismatching blocks" do

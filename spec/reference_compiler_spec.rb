@@ -108,6 +108,10 @@ describe Curly::ReferenceCompiler do
           number.to_i % 2 == 0
         end
 
+        def square?(width:, height:)
+          true
+        end
+
         def self.method_available?(name)
           true
         end
@@ -121,6 +125,10 @@ describe Curly::ReferenceCompiler do
 
     it "allows a parameter" do
       evaluate("even.42?").should == "yolo"
+    end
+
+    it "allows attributes" do
+      evaluate("square? width=2 height=2").should == "yolo"
     end
 
     it "fails if the reference doesn't end with a question mark" do
