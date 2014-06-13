@@ -10,14 +10,6 @@ module Curly
       @attributes = AttributeParser.parse(rest)
     end
 
-    def self.compile_reference(presenter_class, reference)
-      new(presenter_class, reference).compile_reference
-    end
-
-    def self.compile_conditional(presenter_class, reference)
-      new(presenter_class, reference).compile_conditional
-    end
-
     def compile_reference
       compile
     end

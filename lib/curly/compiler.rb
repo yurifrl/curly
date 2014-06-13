@@ -84,7 +84,8 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
-      method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
+      reference_compiler = ReferenceCompiler.new(presenter_class, reference)
+      method_call = reference_compiler.compile_conditional
 
       @blocks.push reference
 
@@ -106,7 +107,8 @@ module Curly
     end
 
     def compile_reference(reference)
-      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
+      reference_compiler = ReferenceCompiler.new(presenter_class, reference)
+      method_call = reference_compiler.compile_reference
       code = "#{method_call} {|*args| yield(*args) }"
 
       "buffer.concat(#{code.strip}.to_s)"

@@ -79,7 +79,8 @@ describe Curly::ReferenceCompiler do
     end
 
     def evaluate(reference, &block)
-      code = Curly::ReferenceCompiler.compile_reference(presenter_class, reference)
+      reference_compiler = Curly::ReferenceCompiler.new(presenter_class, reference)
+      code = reference_compiler.compile_reference
       presenter = presenter_class.new
       context = double("context", presenter: presenter)
 
@@ -137,7 +138,8 @@ describe Curly::ReferenceCompiler do
     end
 
     def evaluate(reference, &block)
-      code = Curly::ReferenceCompiler.compile_conditional(presenter_class, reference)
+      reference_compiler = Curly::ReferenceCompiler.new(presenter_class, reference)
+      code = reference_compiler.compile_conditional
       presenter = presenter_class.new
       context = double("context", presenter: presenter)
 
