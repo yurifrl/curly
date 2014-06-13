@@ -2,30 +2,37 @@ require 'curly/attribute_parser'
 
 module Curly
   class ReferenceCompiler
-    attr_reader :presenter_class, :method
+    attr_reader :presenter_class, :method, :reference, :argument, :attributes
 
-    def initialize(presenter_class, method)
-      @presenter_class, @method = presenter_class, method
+    def initialize(presenter_class, reference)
+      @presenter_class, @reference = presenter_class, reference
+      @method, @argument, rest = parse_name_and_parameter
+      @attributes = AttributeParser.parse(rest)
     end
 
     def self.compile_reference(presenter_class, reference)
-      method, argument, rest = parse_name_and_parameter(reference)
-      attributes = AttributeParser.parse(rest)
-      new(presenter_class, method).compile(argument, attributes)
+      new(presenter_class, reference).compile_reference
     end
 
     def self.compile_conditional(presenter_class, reference)
-      method, argument, rest = parse_name_and_parameter(reference)
-      attributes = AttributeParser.parse(rest)
+      new(presenter_class, reference).compile_conditional
+    end
 
+    def compile_reference
+      compile
+    end
+
+    def compile_conditional
       unless method.end_with?("?")
         raise Curly::Error, "not a valid conditional block: `#{reference}`"
       end
 
-      new(presenter_class, method).compile(argument, attributes)
+      compile
     end
 
-    def self.parse_name_and_parameter(reference)
+    private
+
+    def parse_name_and_parameter
       name, rest = reference.split(/\s+/, 2)
       method, argument = name.split(".", 2)
 
@@ -37,7 +44,7 @@ module Curly
       [method, argument, rest]
     end
 
-    def compile(argument, attributes = {})
+    def compile
       unless presenter_class.method_available?(method)
         raise Curly::InvalidReference.new(method)
       end
@@ -51,8 +58,6 @@ module Curly
 
       code << ")"
     end
-
-    private
 
     def append_positional_argument(code, argument)
       if required_parameter?
