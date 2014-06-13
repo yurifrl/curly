@@ -9,16 +9,31 @@ module Curly
     end
 
     def self.compile_reference(presenter_class, reference)
-      name, rest = reference.split(/\s+/, 2)
-      method, argument = name.split(".", 2)
+      method, argument, rest = parse_name_and_parameter(reference)
       attributes = AttributeParser.parse(rest)
       new(presenter_class, method).compile(argument, attributes)
     end
 
     def self.compile_conditional(presenter_class, reference)
-      m = reference.match(/\A(.+?)(?:\.(.+))?\?\z/)
-      method, argument = "#{m[1]}?", m[2]
+      method, argument, rest = parse_name_and_parameter(reference)
+
+      unless method.end_with?("?")
+        raise Curly::Error, "not a valid conditional block: `#{reference}`"
+      end
+
       new(presenter_class, method).compile(argument)
+    end
+
+    def self.parse_name_and_parameter(reference)
+      name, rest = reference.split(/\s+/, 2)
+      method, argument = name.split(".", 2)
+
+      if !method.end_with?("?") && argument && argument.end_with?("?")
+        method << "?"
+        argument = argument[0..-2]
+      end
+
+      [method, argument, rest]
     end
 
     def compile(argument, attributes = {})

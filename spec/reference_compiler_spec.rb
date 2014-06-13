@@ -123,6 +123,11 @@ describe Curly::ReferenceCompiler do
       evaluate("even.42?").should == "yolo"
     end
 
+    it "fails if the reference doesn't end with a question mark" do
+      expect { evaluate("even.42") }.to raise_exception(Curly::Error)
+      expect { evaluate("even") }.to raise_exception(Curly::Error)
+    end
+
     def evaluate(reference, &block)
       code = Curly::ReferenceCompiler.compile_conditional(presenter_class, reference)
       presenter = presenter_class.new
