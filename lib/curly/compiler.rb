@@ -1,5 +1,6 @@
 require 'curly/scanner'
 require 'curly/reference_compiler'
+require 'curly/reference_parser'
 require 'curly/error'
 require 'curly/invalid_reference'
 require 'curly/incorrect_ending_error'
@@ -118,8 +119,8 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
-      method, argument, attributes = ReferenceCompiler.parse_reference(reference)
-      method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
+      method, argument, attributes = ReferenceParser.parse_reference(reference)
+      method_call = ReferenceCompiler.compile_conditional(presenter_class, method, argument, attributes)
 
       @presenter_classes.push(presenter_class)
       @blocks.push(method)
@@ -141,7 +142,9 @@ module Curly
     end
 
     def compile_reference(reference)
-      method_call = ReferenceCompiler.compile_reference(presenter_class, reference)
+      method, argument, attributes = ReferenceParser.parse_reference(reference)
+      method_call = ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
+
       code = "#{method_call} {|*args| yield(*args) }"
 
       "buffer.concat(#{code.strip}.to_s)"
@@ -156,7 +159,7 @@ module Curly
     end
 
     def validate_block_end(reference)
-      method, argument, attributes = ReferenceCompiler.parse_reference(reference)
+      method, argument, attributes = ReferenceParser.parse_reference(reference)
       last_block = @blocks.pop
 
       unless last_block == method

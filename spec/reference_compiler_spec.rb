@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'curly/reference_parser'
 
 describe Curly::ReferenceCompiler do
   describe ".compile_conditional" do
@@ -50,7 +51,8 @@ describe Curly::ReferenceCompiler do
     end
 
     def evaluate(reference, &block)
-      code = Curly::ReferenceCompiler.compile_conditional(presenter_class, reference)
+      method, argument, attributes = Curly::ReferenceParser.parse_reference(reference)
+      code = Curly::ReferenceCompiler.compile_conditional(presenter_class, method, argument, attributes)
       presenter = presenter_class.new
       context = double("context", presenter: presenter)
 
@@ -142,7 +144,8 @@ describe Curly::ReferenceCompiler do
     end
 
     def evaluate(reference, &block)
-      code = Curly::ReferenceCompiler.compile_reference(presenter_class, reference)
+      method, argument, attributes = Curly::ReferenceParser.parse_reference(reference)
+      code = Curly::ReferenceCompiler.compile_reference(presenter_class, method, argument, attributes)
       presenter = presenter_class.new
       context = double("context", presenter: presenter)
 

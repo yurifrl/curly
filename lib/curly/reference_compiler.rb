@@ -8,18 +8,14 @@ module Curly
       @presenter_class, @method = presenter_class, method
     end
 
-    def self.compile_reference(presenter_class, reference)
-      method, argument, attributes = parse_reference(reference)
-
+    def self.compile_reference(presenter_class, method, argument, attributes)
       new(presenter_class, method).compile(argument, attributes)
     end
 
-    def self.compile_conditional(presenter_class, reference)
-      method, argument, attributes = parse_reference(reference)
-
+    def self.compile_conditional(presenter_class, method, argument, attributes)
       if argument && argument.end_with?("?")
-        method << "?"
-        argument = argument[0..-2]
+        method += "?"
+        argument = argument.dup[0..-2]
       end
 
       unless method.end_with?("?")
@@ -27,14 +23,6 @@ module Curly
       end
 
       new(presenter_class, method).compile(argument, attributes)
-    end
-
-    def self.parse_reference(reference)
-      name, rest = reference.split(/\s+/, 2)
-      method, argument = name.split(".", 2)
-      attributes = AttributeParser.parse(rest)
-
-      [method, argument, attributes]
     end
 
     def compile(argument, attributes = {})
