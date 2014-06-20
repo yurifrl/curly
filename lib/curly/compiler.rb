@@ -118,10 +118,11 @@ module Curly
     end
 
     def compile_conditional_block(keyword, reference)
+      method, argument, attributes = ReferenceCompiler.parse_reference(reference)
       method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
 
       @presenter_classes.push(presenter_class)
-      @blocks.push(reference)
+      @blocks.push(method)
 
       <<-RUBY
         presenters << presenter
@@ -155,10 +156,11 @@ module Curly
     end
 
     def validate_block_end(reference)
+      method, argument, attributes = ReferenceCompiler.parse_reference(reference)
       last_block = @blocks.pop
 
-      unless last_block == reference
-        raise Curly::IncorrectEndingError.new(reference, last_block)
+      unless last_block == method
+        raise Curly::IncorrectEndingError.new(method, last_block)
       end
     end
   end
