@@ -64,7 +64,7 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo "],
       [:conditional_block_start, "bar?"],
       [:text, " hello "],
-      [:conditional_block_end, "bar?"]
+      [:block_end, "bar?"]
     ]
   end
 
@@ -73,7 +73,7 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo "],
       [:inverse_conditional_block_start, "bar?"],
       [:text, " hello "],
-      [:conditional_block_end, "bar?"]
+      [:block_end, "bar?"]
     ]
   end
 
@@ -82,7 +82,7 @@ describe Curly::Scanner, ".scan" do
       [:text, "foo "],
       [:collection_block_start, "bar"],
       [:text, " hello "],
-      [:collection_block_end, "bar"]
+      [:block_end, "bar"]
     ]
   end
 

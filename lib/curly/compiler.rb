@@ -120,22 +120,16 @@ module Curly
     def compile_conditional_block(keyword, reference)
       method_call = ReferenceCompiler.compile_conditional(presenter_class, reference)
 
+      @presenter_classes.push(presenter_class)
       @blocks.push(reference)
 
       <<-RUBY
+        presenters << presenter
         #{keyword} #{method_call}
       RUBY
     end
 
-    def compile_conditional_block_end(reference)
-      validate_block_end(reference)
-
-      <<-RUBY
-        end
-      RUBY
-    end
-
-    def compile_collection_block_end(reference)
+    def compile_block_end(reference)
       @presenter_classes.pop
       validate_block_end(reference)
 
