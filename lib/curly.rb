@@ -27,6 +27,8 @@
 #
 module Curly
   VERSION = "2.0.0"
+  ENV     = ['production', 'test']
+  #if Curly::ENV.include? Rails.env
 
   # Compiles a Curly template to Ruby code.
   #

@@ -146,6 +146,11 @@ module Curly
     end
 
     def compile_component(component)
+      # begin
+      #   name, identifier, attributes = ComponentParser.parse(component)
+      # rescue Exception => e
+      #   return ''
+      # end
       name, identifier, attributes = ComponentParser.parse(component)
       method_call = ComponentCompiler.compile_component(presenter_class, name, identifier, attributes)
       code = "#{method_call} {|*args| yield(*args) }"
